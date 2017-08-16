@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/combineCtrl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+
+    <com.example.codef.ijkplay_demo.ijkplayer.IjkVideoView
+        android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="#000">
+
+    </com.example.codef.ijkplay_demo.ijkplayer.IjkVideoView>
+
+    <LinearLayout
+        android:id="@+id/play_top"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/shape_top"
+        android:gravity="center">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/play_back"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/btn_selector"
+                android:scaleType="fitXY"
+                android:src="@drawable/btn_back" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".5">
+
+            <TextView
+                android:id="@+id/play_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:text="Clannad 第一集"
+                android:textColor="#ffffff"
+                android:textSize="16dp" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/play_controller"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shape_bottom"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/play_play"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/btn_selector"
+                android:scaleType="fitXY"
+                android:src="@drawable/btn_pause" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <SeekBar
+                android:id="@+id/play_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:max="100"
+                android:maxHeight="4dp"
+                android:minHeight="4dp"
+                android:paddingEnd="0dp"
+                android:paddingStart="0dp"
+                android:progressDrawable="@drawable/po_seekbar"
+                android:thumb="@drawable/seekbar_ratio"
+                android:thumbOffset="1.4dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/play_full"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/btn_selector"
+                android:scaleType="fitXY"
+                android:src="@drawable/btn_full" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>
