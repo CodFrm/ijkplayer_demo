@@ -433,6 +433,7 @@ public class ijkvideo {
                     AudioManager am = (AudioManager) ((Activity) mContext).getSystemService(Context.AUDIO_SERVICE);
                     barSound.setProgress(am.getStreamVolume(AudioManager.STREAM_MUSIC));
                     Progress = barSound.getProgress();
+                    mViewSound.setVisibility(View.VISIBLE);
                     delay=2000;
                     sleepHide(mViewSound);
                 }
