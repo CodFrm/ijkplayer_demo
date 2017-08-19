@@ -93,10 +93,10 @@ public class ijkvideo {
         mPlayController = (LinearLayout) mViewHolder.findViewById(R.id.play_controller);
         mTimeCtrl = (LinearLayout) mViewHolder.findViewById(R.id.time_ctrl);
         mViewLight = (RelativeLayout) mViewHolder.findViewById(R.id.view_light);
-        mViewLight.setVisibility(View.GONE);
+        mViewLight.setVisibility(View.INVISIBLE);
         barLight = (ProgressBar) mViewHolder.findViewById(R.id.bar_light);
         mViewSound = (RelativeLayout) mViewHolder.findViewById(R.id.view_sound);
-        mViewSound.setVisibility(View.GONE);
+        mViewSound.setVisibility(View.INVISIBLE);
         barSound = (ProgressBar) mViewHolder.findViewById(R.id.bar_sound);
         mTimeCtrl.setVisibility(View.GONE);
         playTime = (TextView) mViewHolder.findViewById(R.id.now_time);
@@ -398,23 +398,25 @@ public class ijkvideo {
         public static final int TOUCH_RIGHT_Y = 2;//手指右边纵向滑动
         public int Touch = TOUCH_NULL;
         private int Progress = 0;//记录初始进度
-        private int delay=0;
-        private void sleepHide (final View v) {
+        private int delay = 0;
+
+        private void sleepHide(final View v) {
             new Handler().postDelayed(new Runnable() {
                 public void run() {
                     if (delay > 0) {
-                        if (Touch!=TOUCH_NULL) {
+                        if (Touch != TOUCH_NULL) {
                             delay = 2000;
                         } else {
                             delay -= 1000;
                         }
                         sleepHide(v);
                     } else {
-                        v.setVisibility(View.GONE);
+                        v.setVisibility(View.INVISIBLE);
                     }
                 }
             }, 1000);
         }
+
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {//手指在触摸屏上滑动
             if (Touch == TOUCH_NULL) {
@@ -427,14 +429,14 @@ public class ijkvideo {
                 } else if (Touch == TOUCH_LEFT_Y) {
                     Progress = barLight.getProgress();
                     mViewLight.setVisibility(View.VISIBLE);
-                    delay=2000;
+                    delay = 2000;
                     sleepHide(mViewLight);
                 } else if (Touch == TOUCH_RIGHT_Y) {
                     AudioManager am = (AudioManager) ((Activity) mContext).getSystemService(Context.AUDIO_SERVICE);
                     barSound.setProgress(am.getStreamVolume(AudioManager.STREAM_MUSIC));
                     Progress = barSound.getProgress();
                     mViewSound.setVisibility(View.VISIBLE);
-                    delay=2000;
+                    delay = 2000;
                     sleepHide(mViewSound);
                 }
             } else if (Touch == TOUCH_X) {
