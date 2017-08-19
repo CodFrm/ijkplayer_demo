@@ -1,6 +1,7 @@
 package com.example.codef.ijkplay_demo.ijkplayer;
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
@@ -8,7 +9,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +40,7 @@ public class ijkvideo {
     private static final String TAG = "ijkvideo";
     private ImageButton fullButton;
     private TextView mTitleText;
+    private ImageButton playBack;
 
     public ijkvideo(Context context) {
         mContext = context;
@@ -69,11 +73,11 @@ public class ijkvideo {
 
     public void createPlayer() {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        mViewHolder = inflater.inflate(R.layout.play, null).findViewById(R.id.combineCtrl);
+        mViewHolder = (RelativeLayout) inflater.inflate(R.layout.play, null).findViewById(R.id.combineCtrl);
         mVideoView = (IjkVideoView) mViewHolder.findViewById(R.id.video_view);
         mPlayTop = (LinearLayout) mViewHolder.findViewById(R.id.play_top);
         mPlayController = (LinearLayout) mViewHolder.findViewById(R.id.play_controller);
-        mTitleText=(TextView)mViewHolder.findViewById(R.id.play_title);
+        mTitleText = (TextView) mViewHolder.findViewById(R.id.play_title);
         RelativeLayout.LayoutParams rllp = new RelativeLayout.LayoutParams(mWidth, mHeight);
         rllp.leftMargin = mLeft;
         rllp.topMargin = mTop;
@@ -87,12 +91,37 @@ public class ijkvideo {
                 return mGestureDetector.onTouchEvent(motionEvent);
             }
         });
+        mVideoView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_BACK: {
+                        if (isFull) {
+                            fullScreen();
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        });
         playButton = (ImageButton) mViewHolder.findViewById(R.id.play_play);
         playButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 if (mVideoView != null) {
                     pause();
                     show();
+                }
+            }
+        });
+        playBack=(ImageButton)mViewHolder.findViewById(R.id.play_back);
+        playBack.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                if(isFull){
+                    fullScreen();
+                }else{
+                    Instrumentation inst = new Instrumentation();
+                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
                 }
             }
         });
@@ -132,6 +161,10 @@ public class ijkvideo {
                     Timer timer = new Timer();
                     timer.schedule(new TimerTask() {
                         public void run() {
+                            if (!isCreate) {
+                                cancel();
+                                return;
+                            }
                             Message message = Message.obtain();
                             message.arg1 = IMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START;
                             mHandler.sendMessage(message);//发送消息
@@ -149,32 +182,44 @@ public class ijkvideo {
                 }
             }
         });
+        isCreate = true;
     }
 
-    private boolean isFull = false;
-    public void setTitle(String str){
+    private boolean isCreate = false;
+
+    public void deletePlayer() {
+        isCreate = false;
+        mVideoView.release(true);
+        mViewHolder.removeAllViews();
+    }
+
+    public boolean isFull = false;
+
+    public void setTitle(String str) {
         mTitleText.setText(str);
     }
+
     public void fullScreen() {
-        show();
         if (isFull) {
             WindowManager.LayoutParams attr = ((Activity) mContext).getWindow().getAttributes();
             attr.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
             ((Activity) mContext).getWindow().setAttributes(attr);
             ((Activity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            showNavigation();
             if (((Activity) mContext).getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
                 ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
-            move(mLeft,mTop,mWidth,mHeight);
+            move(mLeft, mTop, mWidth, mHeight);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 fullButton.setImageDrawable(mVideoView.getResources().getDrawable(R.drawable.btn_full, null));
             }
-            isFull=false;
+            isFull = false;
         } else {
             WindowManager.LayoutParams params = ((Activity) mContext).getWindow().getAttributes();
             params.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
             ((Activity) mContext).getWindow().setAttributes(params);
             ((Activity) mContext).getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            hiddenNavigation();
             if (((Activity) mContext).getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                 ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
@@ -182,19 +227,32 @@ public class ijkvideo {
 //            rllp.height = -1;
 //            rllp.width = -1;
 //            mViewHolder.setLayoutParams(rllp);
-            move(0,0,-1,-1);
+            move(0, 0, -1, -1);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 fullButton.setImageDrawable(mVideoView.getResources().getDrawable(R.drawable.btn_mini, null));
             }
             isFull = true;
         }
+        show();
+    }
+    //隐藏虚拟按键
+    private void hiddenNavigation(){
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY ;
+        ((Activity) mContext).getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+    }
+    private void showNavigation(){
+        int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE  ;
+        ((Activity) mContext).getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+    }
+    public void move(int left, int top, int width, int height) {
+        ViewGroup.LayoutParams rllp = mViewHolder.getLayoutParams();
+        rllp.width = width;
+        rllp.height = height;
+        mViewHolder.setLayoutParams(rllp);
     }
 
-    public void move(int left, int top, int width, int height) {
-        ViewGroup.LayoutParams rllp =  mViewHolder.getLayoutParams();
-        rllp.width=width;
-        rllp.height=height;
-        mViewHolder.setLayoutParams(rllp);
+    public boolean isPlaying() {
+        return mVideoView.isPlaying();
     }
 
     public void pause() {
@@ -297,6 +355,9 @@ public class ijkvideo {
 
     public void start() {
         mVideoView.start();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            playButton.setImageDrawable(mVideoView.getResources().getDrawable(R.drawable.btn_pause, null));
+        }
     }
 
     public int toggleAspectRatio(int aspect_ratio) {
@@ -307,6 +368,10 @@ public class ijkvideo {
         delay = 0;
         mPlayTop.setVisibility(View.INVISIBLE);
         mPlayController.setVisibility(View.INVISIBLE);
+        //全屏隐藏虚拟按键
+        if(isFull){
+            hiddenNavigation();
+        }
     }
 
     private int delay = 0;
@@ -317,13 +382,16 @@ public class ijkvideo {
     }
 
     public void show(int time) {
+        if (isFull){
+            showNavigation();
+        }
         mPlayTop.setVisibility(View.VISIBLE);
         mPlayController.setVisibility(View.VISIBLE);
         if (delay >= 0) {
             if (delay == 0) {
                 delay = time;
                 sleepHide();
-            }else{
+            } else {
                 delay = time;
             }
         }
