@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -31,6 +32,7 @@ import android.widget.TextView;
 
 import com.example.codef.ijkplay_demo.R;
 
+import java.lang.reflect.Field;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -74,12 +76,51 @@ public class ijkvideo {
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
         mLeft = 0;
-        mTop = 0;
+        mTop = getStatusBarHeight();
         Resources resources = mContext.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         mWidth = dm.widthPixels;
         mHeight = (int) (mWidth * 0.5);
 
+    }
+
+    public int getLeft() {
+        return mLeft;
+    }
+
+    public int getTop() {
+        return mTop;
+    }
+
+    public int getHeight() {
+        return mHeight;
+    }
+
+    public int getWidth() {
+        return mWidth;
+    }
+
+    /**
+     * 通过反射的方式获取状态栏高度
+     *
+     * @return
+     */
+    private int getStatusBarHeight() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                if ((WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS & ((Activity)mContext).getWindow().getAttributes().flags)
+                        == WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS) {
+                    Class<?> c = Class.forName("com.android.internal.R$dimen");
+                    Object obj = c.newInstance();
+                    Field field = c.getField("status_bar_height");
+                    int x = Integer.parseInt(field.get(obj).toString());
+                    return mContext.getResources().getDimensionPixelSize(x);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public GestureDetector mGestureDetector;
@@ -284,10 +325,6 @@ public class ijkvideo {
             if (((Activity) mContext).getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
                 ((Activity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
-//            ViewGroup.LayoutParams rllp = mViewHolder.getLayoutParams();
-//            rllp.height = -1;
-//            rllp.width = -1;
-//            mViewHolder.setLayoutParams(rllp);
             move(0, 0, -1, -1);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 fullButton.setImageDrawable(mVideoView.getResources().getDrawable(R.drawable.btn_mini, null));
@@ -310,9 +347,11 @@ public class ijkvideo {
     }
 
     public void move(int left, int top, int width, int height) {
-        ViewGroup.LayoutParams rllp = mViewHolder.getLayoutParams();
+        FrameLayout.LayoutParams rllp = (FrameLayout.LayoutParams)mViewHolder.getLayoutParams();
         rllp.width = width;
         rllp.height = height;
+        rllp.leftMargin=left;
+        rllp.topMargin=top;
         mViewHolder.setLayoutParams(rllp);
     }
 
