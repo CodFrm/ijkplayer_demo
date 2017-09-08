@@ -76,7 +76,7 @@ public class ijkvideo {
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
         mLeft = 0;
-        mTop = getStatusBarHeight();
+        mTop = 0;
         Resources resources = mContext.getResources();
         DisplayMetrics dm = resources.getDisplayMetrics();
         mWidth = dm.widthPixels;
