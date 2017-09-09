@@ -1,7 +1,6 @@
 package com.example.codef.ijkplay_demo.ijkplayer;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -32,6 +31,7 @@ import android.widget.TextView;
 
 import com.example.codef.ijkplay_demo.R;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -108,7 +108,7 @@ public class ijkvideo {
     private int getStatusBarHeight() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if ((WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS & ((Activity)mContext).getWindow().getAttributes().flags)
+                if ((WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS & ((Activity) mContext).getWindow().getAttributes().flags)
                         == WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS) {
                     Class<?> c = Class.forName("com.android.internal.R$dimen");
                     Object obj = c.newInstance();
@@ -143,7 +143,7 @@ public class ijkvideo {
         playTime = (TextView) mViewHolder.findViewById(R.id.now_time);
         playAllTime = (TextView) mViewHolder.findViewById(R.id.all_time);
         mTitleText = (TextView) mViewHolder.findViewById(R.id.play_title);
-        RelativeLayout.LayoutParams rllp = new RelativeLayout.LayoutParams(mWidth, mHeight);
+        FrameLayout.LayoutParams rllp = new FrameLayout.LayoutParams(mWidth, mHeight);
         rllp.leftMargin = mLeft;
         rllp.topMargin = mTop;
         ((Activity) mContext).addContentView(mViewHolder, rllp);
@@ -189,8 +189,12 @@ public class ijkvideo {
                 if (isFull) {
                     fullScreen();
                 } else {
-                    Instrumentation inst = new Instrumentation();
-                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+                    try {
+                        Runtime runtime = Runtime.getRuntime();
+                        runtime.exec("input keyevent " + KeyEvent.KEYCODE_BACK);
+                    } catch (IOException e) {
+
+                    }
                 }
             }
         });
@@ -347,11 +351,11 @@ public class ijkvideo {
     }
 
     public void move(int left, int top, int width, int height) {
-        FrameLayout.LayoutParams rllp = (FrameLayout.LayoutParams)mViewHolder.getLayoutParams();
+        FrameLayout.LayoutParams rllp = (FrameLayout.LayoutParams) mViewHolder.getLayoutParams();
         rllp.width = width;
         rllp.height = height;
-        rllp.leftMargin=left;
-        rllp.topMargin=top;
+        rllp.leftMargin = left;
+        rllp.topMargin = top;
         mViewHolder.setLayoutParams(rllp);
     }
 
