@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements IVideoEvent {
 //        onCreate(null);
         ijk = new ijkvideo(this);
         ijk.createPlayer(0, 0, 1080, 640);
-        String url = "http://192.168.1.12/v.f4v";
+        String url = "http://192.168.1.9/v.f4v";
         ijk.setVideoUrl(url);
         ijk.setEvent(this);
         ijk.start();

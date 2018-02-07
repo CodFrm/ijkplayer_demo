@@ -527,25 +527,25 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                         Resources r = mAppContext.getResources();
                         String message = "Unknown error";
 
-                        if (framework_err == MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK) {
-                            message = "Invalid progressive playback";
-                        }
-
-                        new android.app.AlertDialog.Builder(getContext())
-                                .setMessage(message)
-                                .setPositiveButton("error",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int whichButton) {
-                                            /* If we get here, there is no onError listener, so
-                                             * at least inform them that the video is over.
-                                             */
-                                                if (mOnCompletionListener != null) {
-                                                    mOnCompletionListener.onCompletion(mMediaPlayer);
-                                                }
-                                            }
-                                        })
-                                .setCancelable(false)
-                                .show();
+//                        if (framework_err == MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK) {
+//                            message = "Invalid progressive playback";
+//                        }
+//
+//                        new android.app.AlertDialog.Builder(getContext())
+//                                .setMessage(message)
+//                                .setPositiveButton("error",
+//                                        new DialogInterface.OnClickListener() {
+//                                            public void onClick(DialogInterface dialog, int whichButton) {
+//                                            /* If we get here, there is no onError listener, so
+//                                             * at least inform them that the video is over.
+//                                             */
+//                                                if (mOnCompletionListener != null) {
+//                                                    mOnCompletionListener.onCompletion(mMediaPlayer);
+//                                                }
+//                                            }
+//                                        })
+//                                .setCancelable(false)
+//                                .show();
                     }
                     return true;
                 }

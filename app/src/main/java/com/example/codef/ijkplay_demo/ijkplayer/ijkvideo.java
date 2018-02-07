@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -54,8 +55,10 @@ public class ijkvideo {
     private myGestureListener mGesture;
     private RelativeLayout mViewLight;
     private RelativeLayout mViewSound;
+    private RelativeLayout mStatus;
     private ProgressBar barLight;
     private ProgressBar barSound;
+    private ImageView loadingView;
 
     public ijkvideo(Context context) {
         mContext = context;
@@ -157,6 +160,9 @@ public class ijkvideo {
         playTime = (TextView) mViewHolder.findViewById(R.id.now_time);
         playAllTime = (TextView) mViewHolder.findViewById(R.id.all_time);
         mTitleText = (TextView) mViewHolder.findViewById(R.id.play_title);
+        mStatus = (RelativeLayout) mViewHolder.findViewById(R.id.statusLayout);
+        mStatus.setVisibility(View.INVISIBLE);
+        loadingView = (ImageView) mViewHolder.findViewById(R.id.loading);
         FrameLayout.LayoutParams rllp = new FrameLayout.LayoutParams(mWidth, mHeight);
         rllp.leftMargin = mLeft;
         rllp.topMargin = mTop;
@@ -240,6 +246,12 @@ public class ijkvideo {
                                           boolean fromUser) {
             }
         });
+        mVideoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
+                return false;
+            }
+        });
         mVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
             @Override
             public boolean onInfo(IMediaPlayer iMediaPlayer, int i, int i1) {
@@ -258,24 +270,40 @@ public class ijkvideo {
                             mHandler.sendMessage(message);//发送消息
                         }
                     }, 1000, 1000);
+                } else if (i == IMediaPlayer.MEDIA_INFO_BUFFERING_START) {
+                    mStatus.setVisibility(View.VISIBLE);
+                    loading();
+                    Rotation=0;
+                    isLoading=true;
+                } else if (i == IMediaPlayer.MEDIA_INFO_BUFFERING_END) {
+                    mStatus.setVisibility(View.INVISIBLE);
+                    isLoading=false;
+                    loadingView.setRotation(0);
                 }
                 return false;
             }
         });
-        mVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(IMediaPlayer iMediaPlayer) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    playButton.setImageDrawable(mVideoView.getResources().getDrawable(R.drawable.btn_play, null));
-                }
-            }
-        });
+
         barLight.setProgress(getLight());
         AudioManager am = (AudioManager) ((Activity) mContext).getSystemService(Context.AUDIO_SERVICE);
         barSound.setMax(am.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         barSound.setProgress(am.getStreamVolume(AudioManager.STREAM_MUSIC));
-        show(5000);
+        Rotation=0;
         return playView;
+    }
+
+    private boolean isLoading = false;
+    private int Rotation=0;
+    private void loading() {
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                if (isLoading) {
+                    loading();
+                    loadingView.setRotation(Rotation+=12);
+                    if(Rotation>=360)Rotation-=360;
+                }
+            }
+        }, 50);
     }
 
     private int getLight() {
@@ -315,9 +343,11 @@ public class ijkvideo {
 
     public boolean isFull = false;
     IVideoEvent mIev;
-    public void setEvent(IVideoEvent ev){
-        mIev=ev;
+
+    public void setEvent(IVideoEvent ev) {
+        mIev = ev;
     }
+
     public void fullScreen() {
         //mIev.onFullScreen();
         if (isFull) {
