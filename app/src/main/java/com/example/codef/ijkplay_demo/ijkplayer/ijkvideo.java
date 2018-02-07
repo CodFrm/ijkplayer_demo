@@ -81,7 +81,6 @@ public class ijkvideo {
         DisplayMetrics dm = resources.getDisplayMetrics();
         mWidth = dm.widthPixels;
         mHeight = (int) (mWidth * 0.5);
-
     }
 
     public int getLeft() {
@@ -125,10 +124,25 @@ public class ijkvideo {
 
     public GestureDetector mGestureDetector;
 
-    public void createPlayer() {
+    public View createPlayer(int left, int top, int width, int height) {
+        mWidth = width;
+        mHeight = height;
+        mTop = top;
+        mLeft = left;
+        return createPlayer();
+    }
+
+    private View playView;
+
+    public void setTitle(String title) {
+        mTitleText.setText(title);
+    }
+
+    public View createPlayer() {
         isCreate = true;
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        mViewHolder = (RelativeLayout) inflater.inflate(R.layout.play, null).findViewById(R.id.combineCtrl);
+        playView = inflater.inflate(R.layout.play, null);
+        mViewHolder = (RelativeLayout) playView.findViewById(R.id.combineCtrl);
         mVideoView = (IjkVideoView) mViewHolder.findViewById(R.id.video_view);
         mPlayTop = (LinearLayout) mViewHolder.findViewById(R.id.play_top);
         mPlayController = (LinearLayout) mViewHolder.findViewById(R.id.play_controller);
@@ -147,7 +161,6 @@ public class ijkvideo {
         rllp.leftMargin = mLeft;
         rllp.topMargin = mTop;
         ((Activity) mContext).addContentView(mViewHolder, rllp);
-        hidden();
         toggleAspectRatio(1);
         mGesture = new myGestureListener();
         mGestureDetector = new GestureDetector(mViewHolder.getContext(), mGesture);
@@ -261,6 +274,8 @@ public class ijkvideo {
         AudioManager am = (AudioManager) ((Activity) mContext).getSystemService(Context.AUDIO_SERVICE);
         barSound.setMax(am.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         barSound.setProgress(am.getStreamVolume(AudioManager.STREAM_MUSIC));
+        show(5000);
+        return playView;
     }
 
     private int getLight() {
@@ -299,12 +314,12 @@ public class ijkvideo {
     }
 
     public boolean isFull = false;
-
-    public void setTitle(String str) {
-        mTitleText.setText(str);
+    IVideoEvent mIev;
+    public void setEvent(IVideoEvent ev){
+        mIev=ev;
     }
-
     public void fullScreen() {
+        //mIev.onFullScreen();
         if (isFull) {
             WindowManager.LayoutParams attr = ((Activity) mContext).getWindow().getAttributes();
             attr.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
