@@ -6,5 +6,5 @@ package com.example.codef.ijkplay_demo.ijkplayer;
 
 public interface IVideoEvent {
     void onFullScreen();
-    void onError();
+    boolean onError(int i);
 }

@@ -249,7 +249,7 @@ public class ijkvideo {
         mVideoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
-                return false;
+                return mIev.onError(i);
             }
         });
         mVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
@@ -273,11 +273,11 @@ public class ijkvideo {
                 } else if (i == IMediaPlayer.MEDIA_INFO_BUFFERING_START) {
                     mStatus.setVisibility(View.VISIBLE);
                     loading();
-                    Rotation=0;
-                    isLoading=true;
+                    Rotation = 0;
+                    isLoading = true;
                 } else if (i == IMediaPlayer.MEDIA_INFO_BUFFERING_END) {
                     mStatus.setVisibility(View.INVISIBLE);
-                    isLoading=false;
+                    isLoading = false;
                     loadingView.setRotation(0);
                 }
                 return false;
@@ -288,19 +288,20 @@ public class ijkvideo {
         AudioManager am = (AudioManager) ((Activity) mContext).getSystemService(Context.AUDIO_SERVICE);
         barSound.setMax(am.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         barSound.setProgress(am.getStreamVolume(AudioManager.STREAM_MUSIC));
-        Rotation=0;
+        Rotation = 0;
         return playView;
     }
 
     private boolean isLoading = false;
-    private int Rotation=0;
+    private int Rotation = 0;
+
     private void loading() {
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 if (isLoading) {
                     loading();
-                    loadingView.setRotation(Rotation+=12);
-                    if(Rotation>=360)Rotation-=360;
+                    loadingView.setRotation(Rotation += 12);
+                    if (Rotation >= 360) Rotation -= 360;
                 }
             }
         }, 50);
