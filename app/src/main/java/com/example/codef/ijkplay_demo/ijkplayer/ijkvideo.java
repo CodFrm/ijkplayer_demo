@@ -422,7 +422,20 @@ public class ijkvideo {
         for (int i = 0; i < aptShar.getCount(); i++) {
             shar tmp = aptShar.getItem(i);
             if (tmp.toString() == Name) {
-                if(!mIjkEvent.onSharSwitch(tmp.getName(),tmp.getUrl())) {
+                if (mIjkEvent == null) {
+                    sharSelectIndex = i;
+                    sharList.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sharList.requestFocusFromTouch();
+                            sharList.setSelection(sharSelectIndex);
+                        }
+                    }, 500);
+                    int nowTime = mVideoView.getCurrentPosition();
+                    setVideoUrl(tmp.getUrl());
+                    seekTo(nowTime);
+                    start();
+                } else if (!mIjkEvent.onSharSwitch(tmp.getName(), tmp.getUrl())) {
                     sharSelectIndex = i;
                     sharList.postDelayed(new Runnable() {
                         @Override
