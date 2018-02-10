@@ -17,10 +17,10 @@
             android:gravity = "bottom">
             <shape>
                 <gradient
-                    android:startColor="#ff4081"
-                    android:centerColor="#ff4081"
+                    android:startColor="#1396db"
+                    android:centerColor="#1396db"
                     android:centerX="0.75"
-                    android:endColor="#ff4081"
+                    android:endColor="#1396db"
                     android:angle="90"
                     />
             </shape>

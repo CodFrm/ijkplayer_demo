@@ -29,10 +29,29 @@ public class MainActivity extends AppCompatActivity implements IVideoEvent {
     public void initPlayer() {
         ijk = new ijkvideo(this);
         ijk.createPlayer(0, 0, 1080, 640);
-        String url = "http://192.168.1.12/1.ff";
-        ijk.setVideoUrl(url);
+        String url = "http://192.168.1.110/v.f4v";
+        ijk.addShar("测试", "http://192.168.1.110/v.f4v");
+        ijk.addShar("呵呵", "http://192.168.1.110/v.f4v");
+        ijk.addShar("会更好的", "http://192.168.1.110/v.f4v");
+        ijk.selectShar("呵呵");
+//        ijk.setVideoUrl(url);
         ijk.setEvent(this);
+//        ijk.start();
+    }
+
+    @Override
+    public void onReception() {
         ijk.start();
+    }
+
+    @Override
+    public boolean onSharSwitch(String Name, String Url) {
+        return false;
+    }
+
+    @Override
+    public void onBackstage() {
+        ijk.pause();
     }
 
     public String xml2ffconcat(String xmlText) {
@@ -48,8 +67,8 @@ public class MainActivity extends AppCompatActivity implements IVideoEvent {
             String tmp = "ffconcat version 1.0\n";
             bos.write(("ffconcat version 1.0\n").getBytes("UTF-8"));
             while (m.find()) {
-                tmp += "file '" + m.group(1) + "'\nduration " + m.group(2)+"\n";
-                bos.write(("file '" + m.group(1) + "'\nduration " + m.group(2)+"\n").getBytes("UTF-8"));
+                tmp += "file '" + m.group(1) + "'\nduration " + m.group(2) + "\n";
+                bos.write(("file '" + m.group(1) + "'\nduration " + m.group(2) + "\n").getBytes("UTF-8"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,26 +98,4 @@ public class MainActivity extends AppCompatActivity implements IVideoEvent {
         ijk.deletePlayer();
         super.onDestroy();
     }
-
-    boolean isPlay = false;
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (ijk.isPlaying()) {
-            isPlay = false;
-            ijk.pause();
-        } else {
-            isPlay = true;
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isPlay) {
-            ijk.start();
-        }
-    }
-
 }

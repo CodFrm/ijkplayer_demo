@@ -8,10 +8,12 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.codef.ijkplay_demo.MaginActivity">
+    tools:context="com.example.codef.ijkplay_demo.MainActivity">
 <Button
     android:layout_alignParentBottom="true"
     android:layout_width="100dp"
     android:layout_height="100dp"
-    android:onClick="btnClick"/>
+    android:onClick="btnClick"
+    android:id="@+id/button" />
+
 </RelativeLayout>

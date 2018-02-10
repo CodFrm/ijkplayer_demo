@@ -23,18 +23,16 @@
         android:gravity="center">
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:layout_weight="5"
             android:gravity="center">
 
             <ImageButton
                 android:id="@+id/play_back"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@drawable/btn_selector"
-                android:scaleType="fitXY"
-                android:src="@drawable/btn_back" />
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/play_btn_back"
+                android:scaleType="fitXY" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -78,10 +76,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
+                android:layout_alignParentBottom="true"
                 android:text="缓冲中..."
                 android:textAlignment="center"
-                android:textColor="#fff"
-                android:layout_alignParentBottom="true"/>
+                android:textColor="#fff" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -171,80 +169,105 @@
         android:orientation="horizontal">
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:layout_weight="3"
             android:gravity="center">
 
             <ImageButton
                 android:id="@+id/play_play"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@drawable/btn_selector"
-                android:scaleType="fitXY"
-                android:src="@drawable/btn_pause" />
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/play_btn_play"
+                android:scaleType="fitXY" />
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center">
 
+            <TextView
+                android:id="@+id/now_time"
+                android:layout_width="65dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="5dp"
+                android:text="00:00:00"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                android:textSize="14dp" />
+
             <SeekBar
                 android:id="@+id/play_seekbar"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="26dp"
+                android:layout_weight="8"
                 android:max="100"
                 android:maxHeight="4dp"
                 android:minHeight="4dp"
                 android:paddingEnd="0dp"
                 android:paddingStart="0dp"
                 android:progressDrawable="@drawable/po_seekbar"
+                android:splitTrack="false"
                 android:thumb="@drawable/seekbar_ratio"
-                android:thumbOffset="1.4dp" />
+                android:thumbOffset="5.5dp" />
 
-            <LinearLayout
-                android:id="@+id/time_ctrl"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/all_time"
+                android:layout_width="65dp"
                 android:layout_height="20dp"
-                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="5dp"
+                android:text="00:00:00"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                android:textSize="14dp" />
 
-                android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="60dp"
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/now_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:text="00:00"
-                    android:textColor="#fff"
-                    android:textSize="18dp" />
+                <Button
+                    android:id="@+id/shar_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00000000"
+                    android:text="高清"
+                    android:textColor="#ffffff"
+                    android:textSize="16dp" />
 
-                <TextView
-                    android:id="@+id/all_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:text="/00:00"
-                    android:textColor="#fff"
-                    android:textSize="18dp" />
-            </LinearLayout>
-
-        </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:layout_weight="3"
             android:gravity="center">
 
             <ImageButton
                 android:id="@+id/play_full"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@drawable/btn_selector"
-                android:scaleType="fitXY"
-                android:src="@drawable/btn_full" />
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/play_btn_full"
+                android:scaleType="fitXY" />
         </RelativeLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/shar_layout"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:background="#7f000000"
+        android:gravity="center_vertical">
+
+        <ListView
+            android:id="@+id/shar_list"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:divider="@null"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
+
+    </LinearLayout>
 </RelativeLayout>

@@ -1,12 +1,14 @@
 package com.example.codef.ijkplay_demo.ijkplayer;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.media.AudioManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -20,11 +22,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -49,7 +54,6 @@ public class ijkvideo {
     private ImageButton fullButton;
     private TextView mTitleText;
     private ImageButton playBack;
-    private LinearLayout mTimeCtrl;
     private TextView playTime;
     private TextView playAllTime;
     private myGestureListener mGesture;
@@ -59,6 +63,9 @@ public class ijkvideo {
     private ProgressBar barLight;
     private ProgressBar barSound;
     private ImageView loadingView;
+    private Button sharBtn;
+    private ListView sharList;
+    private LinearLayout sharLayout;
 
     public ijkvideo(Context context) {
         mContext = context;
@@ -149,20 +156,28 @@ public class ijkvideo {
         mVideoView = (IjkVideoView) mViewHolder.findViewById(R.id.video_view);
         mPlayTop = (LinearLayout) mViewHolder.findViewById(R.id.play_top);
         mPlayController = (LinearLayout) mViewHolder.findViewById(R.id.play_controller);
-        mTimeCtrl = (LinearLayout) mViewHolder.findViewById(R.id.time_ctrl);
         mViewLight = (RelativeLayout) mViewHolder.findViewById(R.id.view_light);
         mViewLight.setVisibility(View.INVISIBLE);
         barLight = (ProgressBar) mViewHolder.findViewById(R.id.bar_light);
         mViewSound = (RelativeLayout) mViewHolder.findViewById(R.id.view_sound);
         mViewSound.setVisibility(View.INVISIBLE);
         barSound = (ProgressBar) mViewHolder.findViewById(R.id.bar_sound);
-        mTimeCtrl.setVisibility(View.GONE);
         playTime = (TextView) mViewHolder.findViewById(R.id.now_time);
         playAllTime = (TextView) mViewHolder.findViewById(R.id.all_time);
         mTitleText = (TextView) mViewHolder.findViewById(R.id.play_title);
         mStatus = (RelativeLayout) mViewHolder.findViewById(R.id.statusLayout);
         mStatus.setVisibility(View.INVISIBLE);
         loadingView = (ImageView) mViewHolder.findViewById(R.id.loading);
+        sharLayout = (LinearLayout) mViewHolder.findViewById(R.id.shar_layout);
+        sharLayout.setVisibility(View.INVISIBLE);
+        sharBtn = (Button) mViewHolder.findViewById(R.id.shar_btn);
+        sharList = (ListView) mViewHolder.findViewById(R.id.shar_list);
+        aptShar = new ArrayAdapter<shar>(((Activity) mContext), R.layout.shar_list_item);
+        sharList.setAdapter(aptShar);
+//        String[] datas = {"4K","蓝光(1080P)", "高清", "流畅"};
+//        sharList.setAdapter(new ArrayAdapter<String>(((Activity) mContext), R.layout.shar_list_item, datas));
+//        sharList.setSelection(1);
+
         FrameLayout.LayoutParams rllp = new FrameLayout.LayoutParams(mWidth, mHeight);
         rllp.leftMargin = mLeft;
         rllp.topMargin = mTop;
@@ -199,6 +214,22 @@ public class ijkvideo {
                 if (mVideoView != null) {
                     pause();
                     show();
+                }
+            }
+        });
+        sharBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mVideoView != null) {
+                    hidden();
+                    sharList.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sharList.requestFocusFromTouch();
+                            sharList.setSelection(sharSelectIndex);
+                        }
+                    }, 500);
+                    sharLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -249,7 +280,7 @@ public class ijkvideo {
         mVideoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
-                return mIev.onError(i);
+                return mIjkEvent.onError(i);
             }
         });
         mVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
@@ -258,7 +289,7 @@ public class ijkvideo {
                 if (i == IMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START) {
                     allTime = mVideoView.getDuration();
                     Timer timer = new Timer();
-                    playAllTime.setText("/" + timeLengthToTime(allTime));
+                    playAllTime.setText(timeLengthToTime(allTime));
                     timer.schedule(new TimerTask() {
                         public void run() {
                             if (!isCreate) {
@@ -283,13 +314,132 @@ public class ijkvideo {
                 return false;
             }
         });
+        sharList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectShar(aptShar.getItem(position).getName());
+            }
+        });
+        sharList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                selectShar(aptShar.getItem(position).getName());
+                return false;
+            }
+        });
 
         barLight.setProgress(getLight());
         AudioManager am = (AudioManager) ((Activity) mContext).getSystemService(Context.AUDIO_SERVICE);
         barSound.setMax(am.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         barSound.setProgress(am.getStreamVolume(AudioManager.STREAM_MUSIC));
+        show();
         Rotation = 0;
+
+        ((Activity) mContext).getApplication().registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+            public int mPlan;
+
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+                mPlan++;
+                if (mPlan == 1) {
+                    mIjkEvent.onReception();
+                }
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+                mPlan--;
+                if (mPlan == 0) {
+                    mIjkEvent.onBackstage();
+                }
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
         return playView;
+    }
+
+    public class shar {
+        public String Name;
+        public String Url;
+
+        shar(String n, String u) {
+            Name = n;
+            Url = u;
+        }
+
+        @Override
+        public String toString() {
+            return Name;
+        }
+
+        public String getName() {
+            return Name;
+        }
+
+        public String getUrl() {
+            return Url;
+        }
+    }
+
+    private ArrayAdapter<shar> aptShar;
+
+    public void removeAllShar() {
+        aptShar.clear();
+    }
+
+    public void addShar(String Name, String Url) {
+        aptShar.add(new shar(Name, Url));
+    }
+
+    private int sharSelectIndex = 0;
+
+    public void selectShar(String Name) {
+        sharLayout.setVisibility(View.INVISIBLE);
+        for (int i = 0; i < aptShar.getCount(); i++) {
+            shar tmp = aptShar.getItem(i);
+            if (tmp.toString() == Name) {
+                if(!mIjkEvent.onSharSwitch(tmp.getName(),tmp.getUrl())) {
+                    sharSelectIndex = i;
+                    sharList.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sharList.requestFocusFromTouch();
+                            sharList.setSelection(sharSelectIndex);
+                        }
+                    }, 500);
+                    int nowTime = mVideoView.getCurrentPosition();
+                    setVideoUrl(tmp.getUrl());
+                    seekTo(nowTime);
+                    start();
+                }
+                break;
+            }
+
+        }
     }
 
     private boolean isLoading = false;
@@ -343,10 +493,10 @@ public class ijkvideo {
     }
 
     public boolean isFull = false;
-    IVideoEvent mIev;
+    IVideoEvent mIjkEvent;
 
     public void setEvent(IVideoEvent ev) {
-        mIev = ev;
+        mIjkEvent = ev;
     }
 
     public void fullScreen() {
@@ -362,9 +512,8 @@ public class ijkvideo {
             }
             move(mLeft, mTop, mWidth, mHeight);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                fullButton.setImageDrawable(mVideoView.getResources().getDrawable(R.drawable.btn_full, null));
+                fullButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_full, null));
             }
-            mTimeCtrl.setVisibility(View.GONE);
             isFull = false;
         } else {
             WindowManager.LayoutParams params = ((Activity) mContext).getWindow().getAttributes();
@@ -377,9 +526,8 @@ public class ijkvideo {
             }
             move(0, 0, -1, -1);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                fullButton.setImageDrawable(mVideoView.getResources().getDrawable(R.drawable.btn_mini, null));
+                fullButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_full, null));
             }
-            mTimeCtrl.setVisibility(View.VISIBLE);
             isFull = true;
         }
         show();
@@ -413,12 +561,12 @@ public class ijkvideo {
         if (mVideoView.isPlaying()) {
             mVideoView.pause();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                playButton.setImageDrawable(mVideoView.getResources().getDrawable(R.drawable.btn_play, null));
+                playButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_play, null));
             }
         } else {
             mVideoView.start();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                playButton.setImageDrawable(mVideoView.getResources().getDrawable(R.drawable.btn_pause, null));
+                playButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_pause, null));
             }
         }
     }
@@ -477,6 +625,9 @@ public class ijkvideo {
             if (isShowing()) {
                 isClick = true;
                 delay = 5000;
+            }
+            if (sharLayout.getVisibility() == View.VISIBLE) {
+                sharLayout.setVisibility(View.INVISIBLE);
             }
             return true;
         }
@@ -625,10 +776,14 @@ public class ijkvideo {
         mVideoView.setVideoPath(url);
     }
 
+    public void seekTo(int msec) {
+        mVideoView.seekTo(msec);
+    }
+
     public void start() {
         mVideoView.start();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            playButton.setImageDrawable(mVideoView.getResources().getDrawable(R.drawable.btn_pause, null));
+            playButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_pause, null));
         }
     }
 

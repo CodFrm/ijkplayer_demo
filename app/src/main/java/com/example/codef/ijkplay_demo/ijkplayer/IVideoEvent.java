@@ -6,5 +6,12 @@ package com.example.codef.ijkplay_demo.ijkplayer;
 
 public interface IVideoEvent {
     void onFullScreen();
+
     boolean onError(int i);
+
+    void onReception();
+
+    void onBackstage();
+
+    boolean onSharSwitch(String Name, String Url);
 }
