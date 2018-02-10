@@ -267,7 +267,7 @@
             android:layout_weight="1"
             android:divider="@null"
             android:focusable="false"
-            android:focusableInTouchMode="false"/>
+            android:focusableInTouchMode="false" />
 
     </LinearLayout>
 </RelativeLayout>

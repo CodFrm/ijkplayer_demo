@@ -435,6 +435,7 @@ public class ijkvideo {
                     setVideoUrl(tmp.getUrl());
                     seekTo(nowTime);
                     start();
+                    sharBtn.setText(tmp.getName());
                 } else if (!mIjkEvent.onSharSwitch(tmp.getName(), tmp.getUrl())) {
                     sharSelectIndex = i;
                     sharList.postDelayed(new Runnable() {
@@ -448,6 +449,7 @@ public class ijkvideo {
                     setVideoUrl(tmp.getUrl());
                     seekTo(nowTime);
                     start();
+                    sharBtn.setText(tmp.getName());
                 }
                 break;
             }
@@ -571,16 +573,9 @@ public class ijkvideo {
     }
 
     public void pause() {
-        if (mVideoView.isPlaying()) {
-            mVideoView.pause();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                playButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_play, null));
-            }
-        } else {
-            mVideoView.start();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                playButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_pause, null));
-            }
+        mVideoView.pause();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            playButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_play, null));
         }
     }
 
