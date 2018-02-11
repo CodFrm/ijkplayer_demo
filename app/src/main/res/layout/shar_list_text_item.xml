@@ -18,7 +18,6 @@
     android:layout_width="match_parent"
     android:layout_height="30dp"
     android:background="@drawable/shar_list_item"
-    android:gravity="center_vertical"
     android:textAlignment="center"
     android:textColor="@drawable/shar_list"
     android:textSize="16dp" />

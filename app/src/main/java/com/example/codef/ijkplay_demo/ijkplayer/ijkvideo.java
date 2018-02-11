@@ -172,7 +172,7 @@ public class ijkvideo {
         sharLayout.setVisibility(View.INVISIBLE);
         sharBtn = (Button) mViewHolder.findViewById(R.id.shar_btn);
         sharList = (ListView) mViewHolder.findViewById(R.id.shar_list);
-        aptShar = new ArrayAdapter<shar>(((Activity) mContext), R.layout.shar_list_item);
+        aptShar = new ArrayAdapter<shar>(((Activity) mContext), R.layout.shar_list_text_item);
         sharList.setAdapter(aptShar);
 //        String[] datas = {"4K","蓝光(1080P)", "高清", "流畅"};
 //        sharList.setAdapter(new ArrayAdapter<String>(((Activity) mContext), R.layout.shar_list_item, datas));
@@ -212,7 +212,11 @@ public class ijkvideo {
         playButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 if (mVideoView != null) {
-                    pause();
+                    if (isPlaying()) {
+                        pause();
+                    } else {
+                        start();
+                    }
                     show();
                 }
             }
@@ -228,7 +232,7 @@ public class ijkvideo {
                             sharList.requestFocusFromTouch();
                             sharList.setSelection(sharSelectIndex);
                         }
-                    }, 500);
+                    }, 50);
                     sharLayout.setVisibility(View.VISIBLE);
                 }
             }
@@ -416,44 +420,49 @@ public class ijkvideo {
     }
 
     private int sharSelectIndex = 0;
+    shar tmpShar;
 
     public void selectShar(String Name) {
         sharLayout.setVisibility(View.INVISIBLE);
         for (int i = 0; i < aptShar.getCount(); i++) {
-            shar tmp = aptShar.getItem(i);
-            if (tmp.toString() == Name) {
+            tmpShar = aptShar.getItem(i);
+            Log.e(null, tmpShar.getName());
+            if (tmpShar.toString() == Name) {
                 if (mIjkEvent == null) {
                     sharSelectIndex = i;
                     sharList.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            int nowTime = mVideoView.getCurrentPosition();
+                            setVideoUrl(tmpShar.getUrl());
+                            seekTo(nowTime);
+                            start();
+                            sharBtn.setText(tmpShar.getName());
+
                             sharList.requestFocusFromTouch();
                             sharList.setSelection(sharSelectIndex);
                         }
-                    }, 500);
-                    int nowTime = mVideoView.getCurrentPosition();
-                    setVideoUrl(tmp.getUrl());
-                    seekTo(nowTime);
-                    start();
-                    sharBtn.setText(tmp.getName());
-                } else if (!mIjkEvent.onSharSwitch(tmp.getName(), tmp.getUrl())) {
+                    }, 50);
+
+                } else if (!mIjkEvent.onSharSwitch(tmpShar.getName(), tmpShar.getUrl())) {
                     sharSelectIndex = i;
                     sharList.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            int nowTime = mVideoView.getCurrentPosition();
+                            setVideoUrl(tmpShar.getUrl());
+                            seekTo(nowTime);
+                            start();
+                            sharBtn.setText(tmpShar.getName());
+
                             sharList.requestFocusFromTouch();
                             sharList.setSelection(sharSelectIndex);
                         }
-                    }, 500);
-                    int nowTime = mVideoView.getCurrentPosition();
-                    setVideoUrl(tmp.getUrl());
-                    seekTo(nowTime);
-                    start();
-                    sharBtn.setText(tmp.getName());
+                    }, 50);
+
                 }
                 break;
             }
-
         }
     }
 
@@ -758,16 +767,23 @@ public class ijkvideo {
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {//双击
-            pause();
+            if (isPlaying()) {
+                pause();
+            } else {
+                start();
+            }
             return true;
         }
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {//单纯点击
+            Log.e(TAG, "单纯点击");
             if (isShowing()) {
                 hidden();
+                Log.e(null,"隐藏");
             } else {
                 show();
+                Log.e(null,"显示");
             }
             return true;
         }

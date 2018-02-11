@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements IVideoEvent {
 
     public void initPlayer() {
         ijk = new ijkvideo(this);
+        ijk.setEvent(this);
         ijk.createPlayer(0, 0, 1080, 640);
         String url = "http://192.168.1.110/v.f4v";
         ijk.addShar("测试", "http://192.168.1.110/v.f4v");
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements IVideoEvent {
         ijk.addShar("会更好的", "http://192.168.1.110/v.f4v");
         ijk.selectShar("呵呵");
 //        ijk.setVideoUrl(url);
-        ijk.setEvent(this);
+
 //        ijk.start();
     }
 
