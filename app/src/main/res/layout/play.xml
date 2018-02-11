@@ -53,39 +53,40 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/statusLayout"
+        android:layout_width="60dp"
+        android:layout_height="140dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:id="@+id/loading"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/loading" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:text="缓冲中..."
+            android:textAlignment="center"
+            android:textColor="#fff" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:gravity="center">
-
-        <RelativeLayout
-            android:id="@+id/statusLayout"
-            android:layout_width="60dp"
-            android:layout_height="140dp"
-            android:layout_centerHorizontal="true">
-
-            <ImageView
-                android:id="@+id/loading"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_centerVertical="true"
-                android:background="@drawable/loading" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_alignParentBottom="true"
-                android:text="缓冲中..."
-                android:textAlignment="center"
-                android:textColor="#fff" />
-        </RelativeLayout>
+        android:layout_alignParentTop="true">
 
         <RelativeLayout
             android:layout_width="30dp"
             android:layout_height="140dp"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="30dp">
 
             <RelativeLayout
@@ -125,6 +126,7 @@
             android:layout_width="30dp"
             android:layout_height="140dp"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="30dp">
 
             <RelativeLayout
@@ -265,9 +267,7 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:divider="@null"
-            android:focusable="false"
-            android:focusableInTouchMode="false" />
+            android:divider="@null" />
 
     </LinearLayout>
 </RelativeLayout>

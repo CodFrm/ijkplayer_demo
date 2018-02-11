@@ -157,19 +157,19 @@ public class ijkvideo {
         mPlayTop = (LinearLayout) mViewHolder.findViewById(R.id.play_top);
         mPlayController = (LinearLayout) mViewHolder.findViewById(R.id.play_controller);
         mViewLight = (RelativeLayout) mViewHolder.findViewById(R.id.view_light);
-        mViewLight.setVisibility(View.INVISIBLE);
+        mViewLight.setVisibility(View.GONE);
         barLight = (ProgressBar) mViewHolder.findViewById(R.id.bar_light);
         mViewSound = (RelativeLayout) mViewHolder.findViewById(R.id.view_sound);
-        mViewSound.setVisibility(View.INVISIBLE);
+        mViewSound.setVisibility(View.GONE);
         barSound = (ProgressBar) mViewHolder.findViewById(R.id.bar_sound);
         playTime = (TextView) mViewHolder.findViewById(R.id.now_time);
         playAllTime = (TextView) mViewHolder.findViewById(R.id.all_time);
         mTitleText = (TextView) mViewHolder.findViewById(R.id.play_title);
         mStatus = (RelativeLayout) mViewHolder.findViewById(R.id.statusLayout);
-        mStatus.setVisibility(View.INVISIBLE);
+        mStatus.setVisibility(View.GONE);
         loadingView = (ImageView) mViewHolder.findViewById(R.id.loading);
         sharLayout = (LinearLayout) mViewHolder.findViewById(R.id.shar_layout);
-        sharLayout.setVisibility(View.INVISIBLE);
+        sharLayout.setVisibility(View.GONE);
         sharBtn = (Button) mViewHolder.findViewById(R.id.shar_btn);
         sharList = (ListView) mViewHolder.findViewById(R.id.shar_list);
         aptShar = new ArrayAdapter<shar>(((Activity) mContext), R.layout.shar_list_text_item);
@@ -311,7 +311,7 @@ public class ijkvideo {
                     Rotation = 0;
                     isLoading = true;
                 } else if (i == IMediaPlayer.MEDIA_INFO_BUFFERING_END) {
-                    mStatus.setVisibility(View.INVISIBLE);
+                    mStatus.setVisibility(View.GONE);
                     isLoading = false;
                     loadingView.setRotation(0);
                 }
@@ -423,7 +423,7 @@ public class ijkvideo {
     shar tmpShar;
 
     public void selectShar(String Name) {
-        sharLayout.setVisibility(View.INVISIBLE);
+        sharLayout.setVisibility(View.GONE);
         for (int i = 0; i < aptShar.getCount(); i++) {
             tmpShar = aptShar.getItem(i);
             Log.e(null, tmpShar.getName());
@@ -644,7 +644,7 @@ public class ijkvideo {
                 delay = 5000;
             }
             if (sharLayout.getVisibility() == View.VISIBLE) {
-                sharLayout.setVisibility(View.INVISIBLE);
+                sharLayout.setVisibility(View.GONE);
             }
             return true;
         }
@@ -668,7 +668,7 @@ public class ijkvideo {
                         }
                         sleepHide(v);
                     } else {
-                        v.setVisibility(View.INVISIBLE);
+                        v.setVisibility(View.GONE);
                     }
                 }
             }, 1000);
@@ -817,8 +817,8 @@ public class ijkvideo {
 
     public void hidden() {
         delay = 0;
-        mPlayTop.setVisibility(View.INVISIBLE);
-        mPlayController.setVisibility(View.INVISIBLE);
+        mPlayTop.setVisibility(View.GONE);
+        mPlayController.setVisibility(View.GONE);
         //全屏隐藏虚拟按键
         if (isFull) {
             hiddenNavigation();
@@ -836,8 +836,12 @@ public class ijkvideo {
         if (isFull) {
             showNavigation();
         }
+//        ((Activity)mContext).Pos();
         mPlayTop.setVisibility(View.VISIBLE);
         mPlayController.setVisibility(View.VISIBLE);
+        mViewHolder.postInvalidate();
+        mPlayTop.postInvalidate();
+        mPlayController.postInvalidate();
         if (delay >= 0) {
             if (delay == 0) {
                 delay = time;
