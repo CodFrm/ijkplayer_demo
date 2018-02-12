@@ -44,7 +44,10 @@
                 android:id="@+id/play_title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginRight="50dp"
+                android:ellipsize="end"
                 android:gravity="center|left"
+                android:singleLine="true"
                 android:text="Clannad 第一集"
                 android:textColor="#ffffff"
                 android:textSize="16dp" />
@@ -194,6 +197,7 @@
                 android:layout_width="65dp"
                 android:layout_height="20dp"
                 android:layout_marginRight="5dp"
+                android:gravity="center_horizontal"
                 android:text="00:00:00"
                 android:textAlignment="center"
                 android:textColor="#fff"
@@ -202,8 +206,8 @@
             <SeekBar
                 android:id="@+id/play_seekbar"
                 android:layout_width="match_parent"
-                android:layout_height="26dp"
-                android:layout_weight="8"
+                android:layout_height="12dp"
+                android:layout_weight="1"
                 android:max="100"
                 android:maxHeight="4dp"
                 android:minHeight="4dp"
@@ -212,13 +216,14 @@
                 android:progressDrawable="@drawable/po_seekbar"
                 android:splitTrack="false"
                 android:thumb="@drawable/seekbar_ratio"
-                android:thumbOffset="5.5dp" />
+                android:thumbOffset="0.1dp" />
 
             <TextView
                 android:id="@+id/all_time"
                 android:layout_width="65dp"
                 android:layout_height="20dp"
                 android:layout_marginLeft="5dp"
+                android:gravity="center_horizontal"
                 android:text="00:00:00"
                 android:textAlignment="center"
                 android:textColor="#fff"

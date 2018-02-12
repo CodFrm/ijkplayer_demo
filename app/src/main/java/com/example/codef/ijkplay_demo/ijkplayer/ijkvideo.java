@@ -37,10 +37,20 @@ import android.widget.TextView;
 
 import com.example.codef.ijkplay_demo.R;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
@@ -172,6 +182,7 @@ public class ijkvideo {
         sharLayout.setVisibility(View.GONE);
         sharBtn = (Button) mViewHolder.findViewById(R.id.shar_btn);
         sharList = (ListView) mViewHolder.findViewById(R.id.shar_list);
+//        android.R.layout.simple_list_item_1;
         aptShar = new ArrayAdapter<shar>(((Activity) mContext), R.layout.shar_list_text_item);
         sharList.setAdapter(aptShar);
 //        String[] datas = {"4K","蓝光(1080P)", "高清", "流畅"};
@@ -285,6 +296,13 @@ public class ijkvideo {
             @Override
             public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
                 return mIjkEvent.onError(i);
+            }
+        });
+
+        mVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(IMediaPlayer iMediaPlayer) {
+                playButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_play, null));
             }
         });
         mVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
@@ -426,7 +444,6 @@ public class ijkvideo {
         sharLayout.setVisibility(View.GONE);
         for (int i = 0; i < aptShar.getCount(); i++) {
             tmpShar = aptShar.getItem(i);
-            Log.e(null, tmpShar.getName());
             if (tmpShar.toString() == Name) {
                 if (mIjkEvent == null) {
                     sharSelectIndex = i;
@@ -780,10 +797,10 @@ public class ijkvideo {
             Log.e(TAG, "单纯点击");
             if (isShowing()) {
                 hidden();
-                Log.e(null,"隐藏");
+                Log.e(null, "隐藏");
             } else {
                 show();
-                Log.e(null,"显示");
+                Log.e(null, "显示");
             }
             return true;
         }
@@ -796,8 +813,83 @@ public class ijkvideo {
         return false;
     }
 
-    public void setVideoUrl(String url) {
-        mVideoView.setVideoPath(url);
+    private String playUrl = "";
+    private boolean over = false;
+
+    public void setVideoUrl(final String url) {
+        playUrl = url;
+        if (url.substring(url.length() - 3).indexOf("xml") >= 0) {
+            over = false;
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        URL tmp = new URL(url);
+                        HttpURLConnection connection = (HttpURLConnection) tmp.openConnection();
+                        connection.setRequestMethod("GET");
+                        connection.setDoInput(true);
+                        connection.setUseCaches(false);
+                        connection.setConnectTimeout(2000);
+                        connection.setReadTimeout(2000);
+                        //获得结果码
+                        connection.connect();
+                        int responseCode = connection.getResponseCode();
+                        if (responseCode == 200) {
+                            //请求成功 获得返回的流
+                            InputStream is = connection.getInputStream();
+                            InputStreamReader isr = new InputStreamReader(is);
+                            BufferedReader bufferReader = new BufferedReader(isr);
+                            String inputLine = "";
+                            String resultData = "";
+                            while ((inputLine = bufferReader.readLine()) != null) {
+                                resultData += inputLine + "\n";
+                            }
+                            if (resultData.length() >= 20) {
+                                playUrl = xml2ffconcat(resultData);
+                            }
+
+                        }
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    over = true;
+                }
+            }.start();
+            while (!over) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+
+                }
+            }
+            mVideoView.setVideoPath(playUrl);
+        } else {
+            mVideoView.setVideoPath(url);
+        }
+    }
+
+    public String xml2ffconcat(String xmlText) {
+        String cachePath = mContext.getCacheDir().getPath() + "/" + System.currentTimeMillis() + ".cae";
+        try {
+            File ffconcatCacheFile = new File(cachePath);
+            if (!ffconcatCacheFile.exists()) {
+                ffconcatCacheFile.createNewFile();
+            }
+            FileOutputStream bos = new FileOutputStream(ffconcatCacheFile);
+            Pattern p = Pattern.compile("<file><!\\[CDATA\\[(.*?)]]></file><seconds>(.*?)</seconds>");
+            Matcher m = p.matcher(xmlText);
+            String tmp = "ffconcat version 1.0\n";
+            bos.write(("ffconcat version 1.0\n").getBytes("UTF-8"));
+            while (m.find()) {
+                tmp += "file '" + m.group(1) + "'\nduration " + m.group(2) + "\n";
+                bos.write(("file '" + m.group(1) + "'\nduration " + m.group(2) + "\n").getBytes("UTF-8"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cachePath;
     }
 
     public void seekTo(int msec) {
@@ -805,6 +897,8 @@ public class ijkvideo {
     }
 
     public void start() {
+        boolean a = isPlaying();
+
         mVideoView.start();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             playButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_pause, null));
