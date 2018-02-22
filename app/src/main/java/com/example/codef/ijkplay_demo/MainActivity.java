@@ -1,6 +1,7 @@
 package com.example.codef.ijkplay_demo;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -30,16 +31,13 @@ public class MainActivity extends AppCompatActivity implements IVideoEvent {
         ijk = new ijkvideo(this);
         ijk.setEvent(this);
         ijk.createPlayer(0, 0, 1080, 640);
-        String url = "http://192.168.1.110/v.f4v";
+        String url = "https://apd-4859cc6dc23b66eb7d15867f8324d6e7.v.smtcdns.com/vipts.tc.qq.com/ACR8Tj-U1eRknUSUTIz9axQb9zGlj784sJFKjhaXgLJg/kEXFrq39XvcbKIVXedwGo3SNJ2cJJcX8rWqV-4OiuBEU2on8ifEFSUmmjOqwoIFIJ1GY0fMe8pcucL3FcvHsMWDf3jh3eDUh5QTEuWSOml8AKffOq93-tzzcbSAJFEZ96DIm2GlGEzrILaNrpteoU31OxJGsA8Pj/0310_d0025oj4m9e.321002.ts.m3u8?ver=4";
 
-        ijk.setTitle("我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题");
-        ijk.addShar("测试", "http://mvvideo10.meitudata.com/5a73fac39cd785585_H264_15.mp4?k=70bc472f07e2e87e16a91f102bedfdfc&t=5a841e82");
-        ijk.addShar("呵呵", "http://192.168.1.110/v.f4v");
-        ijk.addShar("会更好的", "http://182.61.16.216:1086/app/cache/m3u8/b747824b910f2e7c48d84555db972000.xml");
+
         //ijk.selectShar("呵呵");
-//        ijk.setVideoUrl(url);
+        ijk.setVideoUrl(url);
 
-//        ijk.start();
+        ijk.start();
     }
 
     @Override
@@ -59,12 +57,17 @@ public class MainActivity extends AppCompatActivity implements IVideoEvent {
 
 
     public void btnClick(View v) {
-        new Thread() {
+        new Handler().post(new Runnable() {
             @Override
             public void run() {
+                ijk.setTitle("我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题我是标题标题");
+                ijk.addShar("测试", "http://mvvideo10.meitudata.com/5a73fac39cd785585_H264_15.mp4?k=70bc472f07e2e87e16a91f102bedfdfc&t=5a841e82");
+                ijk.addShar("呵呵", "http://192.168.1.110/v.f4v");
+                ijk.addShar("会更好的", "http://182.61.16.216:1086/app/cache/m3u8/b747824b910f2e7c48d84555db972000.xml");
                 ijk.selectShar("会更好的");
             }
-        }.start();
+
+        });
 //        ijk.fullScreen();
     }
 
