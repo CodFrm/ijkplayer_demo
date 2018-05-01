@@ -31,9 +31,9 @@ public class MainActivity extends AppCompatActivity implements IVideoEvent {
         ijk = new ijkvideo(this);
         ijk.setEvent(this);
         ijk.createPlayer(0, 0, 1080, 640);
-        String url = "https://apd-4859cc6dc23b66eb7d15867f8324d6e7.v.smtcdns.com/vipts.tc.qq.com/ACR8Tj-U1eRknUSUTIz9axQb9zGlj784sJFKjhaXgLJg/kEXFrq39XvcbKIVXedwGo3SNJ2cJJcX8rWqV-4OiuBEU2on8ifEFSUmmjOqwoIFIJ1GY0fMe8pcucL3FcvHsMWDf3jh3eDUh5QTEuWSOml8AKffOq93-tzzcbSAJFEZ96DIm2GlGEzrILaNrpteoU31OxJGsA8Pj/0310_d0025oj4m9e.321002.ts.m3u8?ver=4";
+        String url = "http://pl-ali.youku.com/playlist/m3u8?vid=XMzU3MzUyNjYyMA%3D%3D&type=flv&ups_client_netip=6e35bf33&utid=onDeEnUsfVwCAdyoNNzMEYQP&ccode=0502&psid=2c21c583e7f7cab843a7b095f2816463&ups_userid=791141480&ups_ytid=791141480&duration=3580&expire=18000&drm_type=1&drm_device=7&ups_ts=1525185852&onOff=0&encr=0&ups_key=abf8fa1b5193734c3c4fb2c74aa32e3a";
 
-
+        ijk.addShar("test","emm");
         //ijk.selectShar("呵呵");
         ijk.setVideoUrl(url);
 
