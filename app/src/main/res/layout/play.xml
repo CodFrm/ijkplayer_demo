@@ -58,7 +58,7 @@
     <RelativeLayout
         android:id="@+id/statusLayout"
         android:layout_width="60dp"
-        android:layout_height="140dp"
+        android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true">
 
@@ -216,7 +216,7 @@
                 android:progressDrawable="@drawable/po_seekbar"
                 android:splitTrack="false"
                 android:thumb="@drawable/seekbar_ratio"
-                android:thumbOffset="0.1dp" />
+                android:thumbOffset="2.8dp" />
 
             <TextView
                 android:id="@+id/all_time"
@@ -230,6 +230,7 @@
                 android:textSize="14dp" />
 
             <RelativeLayout
+                android:id="@+id/shar_btn_layout"
                 android:layout_width="60dp"
                 android:layout_height="match_parent">
                 <Button

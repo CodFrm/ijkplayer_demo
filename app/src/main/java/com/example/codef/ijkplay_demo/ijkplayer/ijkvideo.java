@@ -90,6 +90,7 @@ public class ijkvideo {
     private ImageButton playButton;
     private SeekBar seekBar;
     private LinearLayout mPlayTop, mPlayController;
+    private RelativeLayout sharBtnLayout;
 
     private void initView() {
         //init player
@@ -182,6 +183,8 @@ public class ijkvideo {
         sharLayout.setVisibility(View.GONE);
         sharBtn = (Button) mViewHolder.findViewById(R.id.shar_btn);
         sharList = (ListView) mViewHolder.findViewById(R.id.shar_list);
+        sharBtnLayout = (RelativeLayout) mViewHolder.findViewById(R.id.shar_btn_layout);
+        sharBtnLayout.setVisibility(View.GONE);
 //        android.R.layout.simple_list_item_1;
         aptShar = new ArrayAdapter<shar>(((Activity) mContext), R.layout.shar_list_text_item);
         sharList.setAdapter(aptShar);
@@ -431,9 +434,13 @@ public class ijkvideo {
 
     public void removeAllShar() {
         aptShar.clear();
+        sharBtnLayout.setVisibility(View.GONE);
     }
 
     public void addShar(String Name, String Url) {
+        if (sharBtnLayout.getVisibility() == View.GONE) {
+            sharBtnLayout.setVisibility(View.VISIBLE);
+        }
         aptShar.add(new shar(Name, Url));
     }
 
