@@ -47,6 +47,8 @@ import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -76,9 +78,11 @@ public class ijkvideo {
     private Button sharBtn;
     private ListView sharList;
     private LinearLayout sharLayout;
+    private Map<String, String> mHeaders;
 
     public ijkvideo(Context context) {
         mContext = context;
+        mHeaders = new HashMap<>();
         initView();
     }
 
@@ -612,6 +616,10 @@ public class ijkvideo {
         }
     }
 
+    public int getVideoTime(){
+        return allTime;
+    }
+
     private int allTime;
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -825,6 +833,7 @@ public class ijkvideo {
 
     public void setVideoUrl(final String url) {
         playUrl = url;
+        mVideoView.setHeaders(mHeaders);
         if (url.substring(url.length() - 3).indexOf("xml") >= 0) {
             over = false;
             new Thread() {
@@ -877,6 +886,14 @@ public class ijkvideo {
         }
     }
 
+    public void clearHeader() {
+        mHeaders.clear();
+    }
+
+    public void addHeader(String key, String value) {
+        mHeaders.put(key, value);
+    }
+
     public String xml2ffconcat(String xmlText) {
         String cachePath = mContext.getCacheDir().getPath() + "/" + System.currentTimeMillis() + ".cae";
         try {
@@ -904,7 +921,7 @@ public class ijkvideo {
     }
 
     public void start() {
-        boolean a = isPlaying();
+        mStatus.setVisibility(View.GONE);
 
         mVideoView.start();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

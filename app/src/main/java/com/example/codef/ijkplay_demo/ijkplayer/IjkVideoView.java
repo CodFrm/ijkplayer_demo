@@ -227,13 +227,18 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         setVideoURI(Uri.parse(path));
     }
 
+
+    public void setHeaders(Map<String, String> headers) {
+        mHeaders = headers;
+    }
+
     /**
      * Sets video URI.
      *
      * @param uri the URI of the video.
      */
     public void setVideoURI(Uri uri) {
-        setVideoURI(uri, null);
+        setVideoURI(uri, mHeaders);
     }
 
     /**
@@ -246,7 +251,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
      *                "android-allow-cross-domain-redirect" as the key and "0" or "1" as the value
      *                to disallow or allow cross domain redirection.
      */
-    private void setVideoURI(Uri uri, Map<String, String> headers) {
+    public void setVideoURI(Uri uri, Map<String, String> headers) {
         mUri = uri;
         mHeaders = headers;
         mSeekWhenPrepared = 0;

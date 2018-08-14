@@ -16,4 +16,12 @@
     android:onClick="btnClick"
     android:id="@+id/button" />
 
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_alignBottom="@+id/button"
+        android:id="@+id/text_error"
+        android:text="错误代码"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="32dp" />
 </RelativeLayout>
