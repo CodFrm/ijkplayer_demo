@@ -616,6 +616,13 @@ public class ijkvideo {
         }
     }
 
+    public void stop(){
+        mVideoView.stopPlayback();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            playButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_play, null));
+        }
+    }
+
     public int getVideoTime(){
         return allTime;
     }
