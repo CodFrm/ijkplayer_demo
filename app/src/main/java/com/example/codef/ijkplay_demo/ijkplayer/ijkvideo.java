@@ -108,6 +108,12 @@ public class ijkvideo {
         mHeight = (int) (mWidth * 0.5);
     }
 
+    private boolean isAllShow = true;
+
+    public void hideControls(boolean show) {
+        isAllShow = show;
+    }
+
     public int getLeft() {
         return mLeft;
     }
@@ -616,14 +622,14 @@ public class ijkvideo {
         }
     }
 
-    public void stop(){
+    public void stop() {
         mVideoView.stopPlayback();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             playButton.setBackground(mVideoView.getResources().getDrawable(R.drawable.play_btn_play, null));
         }
     }
 
-    public int getVideoTime(){
+    public int getVideoTime() {
         return allTime;
     }
 
@@ -958,6 +964,9 @@ public class ijkvideo {
     }
 
     public void show(int time) {
+        if(!isAllShow){
+            return;
+        }
         if (isFull) {
             showNavigation();
         }
